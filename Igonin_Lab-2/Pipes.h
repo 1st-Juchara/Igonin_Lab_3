@@ -6,27 +6,16 @@
 
 class Pipes
 {
-    struct Pipe
-    {
-        int id = 0;
-        std::string name = "";
-        float length = 0;
-        float diameter = 0;
-        bool inRepare = false;
-    };
-
-    int ID_max = 0;
-
-    std::vector <Pipe> pipes;
-    std::vector <int> filterPipes();
-    void ViewPipe(const Pipe& pipe);
-    void changePipe(const std::vector <int>& index);
+    std::string name = "";
+    float length = 0;
+    float diameter = 0;
+    bool inRepare = false;
 public:
-    bool isExist();
-    void ViewPipes();
     void addPipe();
-    void editPipes();
-    void PipesDataOut(std::ofstream& fout);
-    void PipeDataIn(std::ifstream& in);
+    void printPipe(std::ofstream& fout);
+    void loadPipe(std::ifstream& in);
+    bool filter(int status, std::string name_str);
+    void View();
+    void changeStatus(bool status);
 };
 

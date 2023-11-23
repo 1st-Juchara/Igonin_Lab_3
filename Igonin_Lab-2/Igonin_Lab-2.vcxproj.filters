@@ -24,7 +24,10 @@
     <ClCompile Include="SubFunc.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="CCS.cpp">
+    <ClCompile Include="CSS.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="GTN.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -36,6 +39,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="CSs.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GTN.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

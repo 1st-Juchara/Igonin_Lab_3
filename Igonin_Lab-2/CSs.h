@@ -6,27 +6,17 @@
 
 class CSs
 {
-	struct CS
-	{
-        int id = 0;
-        std::string name = "";
-        int WSCnt;
-        int WSOn;
-        int payoff = 0;
-	};
-    
-    int ID_max = 0;
+    std::string name = "";
+    int WSCnt;
+    int WSOn;
+    int payoff = 0;
 
-    std::vector <CS> Stations;
-    std::vector <int> filterCS();
-    void ViewCS(const CS& Stations);
-    void changeCS(const std::vector <int>& index);
 public:
-    bool isExist();
-    void ViewStations();
     void addCS();
-    void editCS();
-    void CSDataOut(std::ofstream& fout);
-    void CSDataIn(std::ifstream& in);
+    void printCS(std::ofstream& fout);
+    void loadCS(std::ifstream& in);
+    bool filter(int percent, char p_way, std::string name_s);
+    void View();
+    void editWS(int delta);
 };
 

@@ -1,14 +1,21 @@
-3 3
-pipe
-1 10 10 0
-piperiper
-2 10 10 0
-Truba4
-3 10 1000 0
--3 3
-Station
--1 100 10 44
-Stationero4ka
--2 50 10 69
-StaticX
--3 60 10 99
+6
+3
+1
+pipe 1
+10 20 0
+2
+piipe 2
+23 10 0
+3
+truba 3
+10 2 0
+3
+-6
+Derex
+60 0 33
+-5
+Stat 2
+100 0 55
+-4
+Stat 1
+100 0 44
