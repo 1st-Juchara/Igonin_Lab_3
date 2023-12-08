@@ -114,6 +114,28 @@ void choosingElements(const vector <int>& index, vector <int>& index_ch) {
     }
 }
 
+void dfs(vector<vector<int>>& graph, int v, vector<int>& visited, vector<int>& order)
+{
+    visited[v] = 1;
+
+    for (int i = 0; i < graph[v].size(); i++)
+        if (visited[i] != 1)
+            dfs(graph, i, visited, order);
+
+    order.push_back(v);
+}
+
+bool loopcheck(vector<vector<int>>& graph) {
+    for (int i = 0; i < graph.size(); i++) {
+        for (int j = 0; j < graph[1].size(); j++) {
+            if (graph[i][j] != INF && graph[j][i] != INF) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
 string chooseFiles(const std::string& path)
 {
     cout << "Choose file:\n" << endl;

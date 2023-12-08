@@ -14,6 +14,12 @@ void GTN::CSDataOut(std::ofstream& fout)
 
 void GTN::CSDataIn(std::ifstream& in)
 {
+    for (auto it = Stations.begin(); it != Stations.end(); it++)
+    {
+        Stations[-(-it->first + ID_max)] = it->second;
+        Stations.erase(it);
+    }
+
     in.ignore(10000, '\n');
     int CSCnt = 0;
     in >> CSCnt;
@@ -25,6 +31,8 @@ void GTN::CSDataIn(std::ifstream& in)
         Station.loadCS(in);
         Stations.insert({ id, Station });
     }
+
+    ID_max = Stations.size() + pipes.size();
 }
 
 void GTN::PipesDataOut(std::ofstream& fout)
@@ -39,6 +47,11 @@ void GTN::PipesDataOut(std::ofstream& fout)
 
 void GTN::PipesDataIn(std::ifstream& in)
 {
+    for (auto it = pipes.begin(); it != pipes.end(); it++)
+    {
+        pipes[it->first + ID_max] = it->second;
+        pipes.erase(it);
+    }
     in.ignore(10000, '\n');
     int pipesCnt = 0;
     in >> pipesCnt;
@@ -49,6 +62,30 @@ void GTN::PipesDataIn(std::ifstream& in)
         Pipes pipe;
         pipe.loadPipe(in);
         pipes.insert({ id, pipe });
+    }
+}
+
+void GTN::WaysDataOut(std::ofstream& fout)
+{
+    fout << connections.size() << endl;
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        fout << it->first.first << ' ' << it->first.second << ' ' << it->second << endl;
+    }
+}
+
+void GTN::WaysDataIn(std::ifstream& in)
+{
+    in.ignore(10000, '\n');
+    int waysCnt = 0;
+    in >> waysCnt;
+    for (int i = 0; i < waysCnt; i++)
+    {
+        int cs1, cs2, pipe;
+        in >> cs1;
+        in >> cs2;
+        in >> pipe;
+        connections.insert({ make_pair(cs1, cs2), pipe });
     }
 }
 
@@ -65,13 +102,34 @@ void GTN::changeCS(const std::vector<int>& index)
         for (int i = 0; i < index.size(); i++)
         {
             Stations[index[i]].editWS(delta);
-                
+            cout << endl;
         }
     }
     else
         for (int i = index.size() - 1; i >= 0; i--)
         {
-            Stations.erase(index[i]);
+            int t = -1;
+            for (auto it = connections.begin(); it != connections.end(); it++)
+            {
+                if ((it->first.first == index[i] or it->first.second == index[i]) and (t == -1))
+                {
+                    cout << "Are you shure to delete this CS?" << endl
+                         << "1. Yes\n2. No" << endl;
+                    Stations[index[i]].View(); 
+                    cout << "It connected with others";
+                    t = tryChoose(0, 1);
+                    if (t == 0)
+                        connections.erase(it->first);
+                    else
+                        break;
+                }
+                else if ((it->first.first == index[i] or it->first.second == index[i]) and (t == 0))
+                {
+                    connections.erase(it->first);
+                }
+            }
+            if (t != 1)
+                Stations.erase(index[i]);
         }
 }
 
@@ -99,6 +157,7 @@ std::vector<int> GTN::filterCS()
     vector <int> index;
     string name = "";
     int workshops = -1;
+    char p_way = '=';
     cout << "1. Choose by filter \n2. Display all";
     if (tryChoose(1, 2) == 1)
     {
@@ -141,9 +200,9 @@ std::vector<int> GTN::filterCS()
                 << "2. Less than the selected percentage" << endl
                 << "3. According the selected percentage";
             number = tryChoose(1, 3);
-        }
 
-        char p_way = number == 1 ? '>' : number == 2 ? '<' : '=';
+            char p_way = number == 1 ? '>' : number == 2 ? '<' : '=';
+        }
 
         for (auto it = Stations.begin(); it != Stations.end(); it++)
             if (it->second.filter(workshops, p_way, name))
@@ -155,7 +214,7 @@ std::vector<int> GTN::filterCS()
     return index;
 }
 
-std::vector<int> GTN::filterPipes()
+std::vector<int> GTN::filterPipes(int d, bool use)
 {
     vector <int> index;
     string name = "";
@@ -177,14 +236,13 @@ std::vector<int> GTN::filterPipes()
             cout << "1. EXPLOITED \n2. IN REPAIR";
             status = tryChoose(1, 2) - 1;
         }
-
-        for (auto it = pipes.begin(); it != pipes.end(); it++)
-            if (it->second.filter(status, name))
-                index.push_back(it->first);
     }
     else
+    {
         for (auto it = pipes.begin(); it != pipes.end(); it++)
-            index.push_back(it->first);
+            if (it->second.filter(status, name, d, use))
+                index.push_back(it->first);
+    }
     return index;
 }
 
@@ -229,12 +287,96 @@ void GTN::addCS()
     Stations.insert({ id, Station});
 }
 
-void GTN::addPipe()
+void GTN::addPipe(int d)
 {
     int id = ++ID_max;
     Pipes pipe;
-    pipe.addPipe();
+    pipe.addPipe(d);
     pipes.insert({ id, pipe});
+}
+
+void GTN::addConnect()
+{
+    while (true)
+    {
+        if (Stations.size() >= 2)
+        {
+            vector <int> index = filterCS();
+            for (int i = 0; i < index.size(); i++)
+            {
+                cout << "Station " << i + 1 << endl;
+                Stations[index[i]].View();
+            }
+
+            int index_1;
+            int index_2;
+
+            while (1)
+            {
+                cout << "Choose first CS for connecting ";
+                index_1 = index[tryChoose(1, index.size()) - 1];
+                cout << "Choose second CS for connecting ";
+                index_2 = index[tryChoose(1, index.size()) - 1];
+                if (index_1 == index_2)
+                    cout << "Second CS must be different" << endl;
+                else
+                    break;
+            }
+
+            cout << "Choose pipe diameter:" << endl
+                << "1. 500" << endl
+                << "2. 700" << endl
+                << "3. 1000" << endl
+                << "4. 1400";
+            int num = tryChoose(1, 4);
+            int diameter = num == 1 ? 500 : num == 2 ? 700 : num == 3 ? 1000 : 1400;
+
+            int pipe_cnt = 0;
+            index.clear();
+
+            index = filterPipes(diameter, false);
+
+            if (index.size() == 0)
+            {
+                cout << "There is no pipes with same diameter.\n\nWould you like to add some?" << endl
+                    << "1. Add pipe" << endl
+                    << "2. Return to menu";
+                if (!(tryChoose(1, 2) - 1))
+                {
+                    addPipe(diameter);
+                    index.push_back(ID_max);
+                } 
+                else
+                    break;
+            }
+
+            for (int i = 0; i < index.size(); i++)
+            {
+                cout << "Pipe " << i + 1 << endl;
+                pipes[index[i]].View();
+            }
+                
+
+            cout << "Choose pipe";
+            num = tryChoose(1, index.size()) - 1;
+            int length = pipes[index[num]].getLength();
+            pipes[index[num]].inUse = true;
+
+
+            connections.insert({ make_pair(index_1, index_2) , index[num] });
+            break;
+        }
+        else
+        {
+            cout << "Not enough CS.\n\nWould you like to add some?" << endl
+                << "1. Add CS" << endl
+                << "2. Return to menu";
+            if (!(tryChoose(1, 2) - 1))
+                addCS();
+            else
+                break;
+        }
+    }
 }
 
 void GTN::DataOut()
@@ -246,6 +388,7 @@ void GTN::DataOut()
         fout << ID_max << endl;
         PipesDataOut(fout);
         CSDataOut(fout);
+        WaysDataOut(fout);
         cout << "\nSave completed" << endl;
         fout.close();
     }
@@ -262,6 +405,7 @@ void GTN::DataIn()
         fin >> ID_max;
         PipesDataIn(fin);
         CSDataIn(fin);
+        WaysDataIn(fin);
         fin.close();
         cout << "\nLoad completed" << endl;
     }
@@ -298,4 +442,59 @@ void GTN::editPipes()
         choosingElements(index, index_ch);
         changePipe(index_ch);
     }
+}
+
+void GTN::topologicalSorting()
+{
+    vector <int> vert;
+    int n = 0;
+
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        bool t1 = true;
+        bool t2 = true;
+        for (int i = 0; i < vert.size(); i++)
+        {
+            if (vert[i] == it->first.first)
+                t1 = false;
+            if (vert[i] == it->first.second)
+                t2 = false;
+        }
+        
+        if (t1)
+            vert.push_back(it->first.first);
+        if (t2)
+            vert.push_back(it->first.second);
+        n += int(t1) + int(t2);
+    }
+
+    vector<vector<int>> matrix(n, vector<int>(n, INF));
+
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+        {
+            matrix[i][j] = connections.contains(make_pair(vert[i], vert[j])) ? connections[make_pair(vert[i], vert[j])] : INF;
+        }
+    
+    if (!loopcheck(matrix))
+    {
+        vector <int> visited(n);
+        vector <int> order;
+        for (int i = 0; i < n; i++)
+        {
+            if (visited[i] == false)
+            {
+                dfs(matrix, i, visited, order);
+                reverse(order.begin(), order.end());
+                for (int j = 0; j < order.size(); j++)
+                    cout << vert[order[j]] << ' ';
+            }
+        }
+        cout << "\n\n";
+    }
+    else
+    {
+        cout << "ALARM: loop is disapear" << endl;
+    }
+    
 }

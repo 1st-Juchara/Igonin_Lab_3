@@ -14,9 +14,11 @@ using namespace std;
 using namespace chrono;
 
 int Menu() {
-    std::cout << "1. Add pipe \n2. Add CS \n3. View pipes \n4. View CS \n5. Edit pipe \n6. Edit CS \n7. Save \n8. Load \n9. Exit";
-    int number = tryChoose(1, 9);
+    std::cout << "1.  Add pipe \n2.  Add CS \n3.  Add connection \n4.  Topological sort \n5.  View pipes \n6.  View CS \n7.  Edit pipe \n8.  Edit CS \n9.  Save \n10. Load \n11. Exit";
+    int number = tryChoose(1, 11);
     return number;
+    int x = 5;
+    int y = 6;
 }
 
 int main()
@@ -39,24 +41,30 @@ int main()
             Rijulka.addCS();
             break;
         case 3:
-            Rijulka.ViewPipes();
+            Rijulka.addConnect();
             break;
         case 4:
-            Rijulka.ViewStations();
+            Rijulka.topologicalSorting();
             break;
         case 5:
-            Rijulka.editPipes();
+            Rijulka.ViewPipes();
             break;
         case 6:
-            Rijulka.editCS();
+            Rijulka.ViewStations();
             break;
         case 7:
-            Rijulka.DataOut();
+            Rijulka.editPipes();
             break;
         case 8:
-            Rijulka.DataIn();
+            Rijulka.editCS();
             break;
         case 9:
+            Rijulka.DataOut();
+            break;
+        case 10:
+            Rijulka.DataIn();
+            break;
+        case 11:
             return 0;
             break;
         default:

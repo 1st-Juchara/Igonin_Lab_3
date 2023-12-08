@@ -4,6 +4,8 @@
 #include <vector>
 #include <fstream>
 
+
+
 class Pipes
 {
     std::string name = "";
@@ -11,11 +13,14 @@ class Pipes
     float diameter = 0;
     bool inRepare = false;
 public:
-    void addPipe();
+    void addPipe(int d);
     void printPipe(std::ofstream& fout);
     void loadPipe(std::ifstream& in);
-    bool filter(int status, std::string name_str);
+    bool filter(int status, std::string name_str, int d = -1, bool use = true);
     void View();
+    int getDiameter();
+    int getLength();
     void changeStatus(bool status);
+    bool inUse = false;
 };
 

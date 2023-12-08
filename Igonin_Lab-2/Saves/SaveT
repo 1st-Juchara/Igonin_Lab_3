@@ -1,5 +1,5 @@
-6
-3
+8
+5
 1
 pipe 1
 10 20 0
@@ -9,6 +9,12 @@ piipe 2
 3
 truba 3
 10 2 0
+7
+pipundris
+100 500 0
+8
+trubadiriusiumal
+10 500 0
 3
 -6
 Derex
@@ -19,4 +25,6 @@ Stat 2
 -4
 Stat 1
 100 0 44
-0
+2
+-6 -4 8
+-5 -4 7
