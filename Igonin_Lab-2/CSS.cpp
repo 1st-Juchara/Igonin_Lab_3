@@ -53,8 +53,10 @@ bool CSs::filter(int percent, char p_way, std::string name_s)
     }
 }
 
-void CSs::View()
+void CSs::View(int id)
 {
+    if (id != -1)
+        cout << "\t\t" << "ID: " << id << endl;
     cout << "\t\t" << "Name: " << name << endl;
     cout << "\t\t" << "Number of workshops: " << WSCnt << endl;
     cout << "\t\t" << "Workshops online: " << WSOn << endl;

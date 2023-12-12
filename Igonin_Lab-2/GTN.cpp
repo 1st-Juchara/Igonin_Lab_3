@@ -263,7 +263,9 @@ void GTN::ViewStations()
         vector <int> index = filterCS();
         cout << "Stations:" << endl;
         for (int i = 0; i < index.size(); i++)
-            Stations[index[i]].View();
+        {
+            Stations[index[i]].View(index[i]);
+        }
     }
 }
 
@@ -281,7 +283,7 @@ void GTN::ViewPipes()
 
 void GTN::addCS()
 {
-    int id = -(++ID_max);
+    int id = ++ID_max;
     CSs Station;
     Station.addCS();
     Stations.insert({ id, Station});
@@ -289,7 +291,7 @@ void GTN::addCS()
 
 void GTN::addPipe(int d)
 {
-    int id = ++ID_max;
+    int id = -(++ID_max);
     Pipes pipe;
     pipe.addPipe(d);
     pipes.insert({ id, pipe});
@@ -305,7 +307,7 @@ void GTN::addConnect()
             for (int i = 0; i < index.size(); i++)
             {
                 cout << "Station " << i + 1 << endl;
-                Stations[index[i]].View();
+                Stations[index[i]].View(index[i]);
             }
 
             int index_1;
@@ -381,7 +383,7 @@ void GTN::addConnect()
 
 void GTN::DataOut()
 {
-    string name = chooseFiles("C:/U4Oba/ALG_Yaz/Igonin_Lab_2/Igonin_Lab-2/Igonin_Lab-2/Saves");
+    string name = chooseFiles("Saves/");
     ofstream fout("Saves/" + name, ios_base::out | ios_base::trunc);// out - открыте для записи, trunc - удаление содержимого, ios_base - класс для всех потоковых классов ввода-вывода
     if (fout.is_open())
     {
@@ -398,7 +400,7 @@ void GTN::DataOut()
 
 void GTN::DataIn()
 {
-    string name = chooseFiles("C:/U4Oba/ALG_Yaz/Igonin_Lab_2/Igonin_Lab-2/Igonin_Lab-2/Saves");
+    string name = chooseFiles("Saves/");
     ifstream fin("Saves/" + name);
     if (fin.is_open())
     {
@@ -421,7 +423,7 @@ void GTN::editCS()
         for (int i = 0; i < index.size(); i++)
         {
             cout << "Station " << i + 1 << endl;
-            Stations[index[i]].View();
+            Stations[index[i]].View(index[i]);
         }
         vector <int> index_ch;
         choosingElements(index, index_ch);

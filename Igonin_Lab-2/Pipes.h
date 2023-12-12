@@ -16,7 +16,7 @@ public:
     void addPipe(int d);
     void printPipe(std::ofstream& fout);
     void loadPipe(std::ifstream& in);
-    bool filter(int status, std::string name_str, int d = -1, bool use = true);
+    bool filter(int status, std::string name_str, int d = -1, bool use = false);
     void View();
     int getDiameter();
     int getLength();

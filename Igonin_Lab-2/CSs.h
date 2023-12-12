@@ -16,7 +16,7 @@ public:
     void printCS(std::ofstream& fout);
     void loadCS(std::ifstream& in);
     bool filter(int percent, char p_way, std::string name_s);
-    void View();
+    void View(int id = -1);
     void editWS(int delta);
 };
 

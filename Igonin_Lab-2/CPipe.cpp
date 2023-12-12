@@ -51,7 +51,7 @@ void Pipes::loadPipe(std::ifstream& in)
 
 bool Pipes::filter(int status, string name_str, int d, bool use)
 {
-    return (((inRepare == bool(status)) or (status == -1)) and ((diameter == d) or (d == -1)) and inString(name, name_str) and ((use == inUse) or use));
+    return (((inRepare == bool(status)) or (status == -1)) and ((diameter == d) or (d == -1)) and inString(name, name_str) and (use or (d == -1)));
 }
 
 void Pipes::View()
