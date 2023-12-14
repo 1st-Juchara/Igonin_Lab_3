@@ -25,6 +25,7 @@ private:
 	void WaysDataIn(std::ifstream& in);
 	void changeCS(const std::vector <int>& index);
 	void changePipe(const std::vector <int>& index);
+	float Dijkstra(std::vector<std::vector<int>>& a, int index_1, int index_2);
 	std::vector <int> filterCS();
 	std::vector <int> filterPipes(int d = -1, bool use = true);
 public:
@@ -40,5 +41,7 @@ public:
 	void editCS();
 	void editPipes();
 	void topologicalSorting();
+	void shortestPath();
+	//void maxStream();
 };
 

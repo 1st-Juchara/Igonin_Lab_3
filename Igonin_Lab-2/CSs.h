@@ -18,5 +18,6 @@ public:
     bool filter(int percent, char p_way, std::string name_s);
     void View(int id = -1);
     void editWS(int delta);
+    std::string getName();
 };
 

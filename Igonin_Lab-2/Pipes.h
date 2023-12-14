@@ -20,7 +20,8 @@ public:
     void View();
     int getDiameter();
     int getLength();
+    float getProductivity();
     void changeStatus(bool status);
-    bool inUse = false;
+    bool inUse;
 };
 

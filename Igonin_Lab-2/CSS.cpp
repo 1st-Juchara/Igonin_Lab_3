@@ -72,3 +72,8 @@ void CSs::editWS(int delta)
         cout << "Failed change workstations on " + name << endl;
 }
 
+std::string CSs::getName()
+{
+    return name;
+}
+

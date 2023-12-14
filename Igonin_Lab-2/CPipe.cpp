@@ -37,7 +37,7 @@ void Pipes::addPipe(int d)
 void Pipes::printPipe(std::ofstream& fout)
 {
     fout << name << endl;
-    fout << length << ' ' << diameter << ' ' << inRepare << endl;
+    fout << length << ' ' << diameter << ' ' << inRepare << ' ' << inUse << endl;
 }
 
 void Pipes::loadPipe(std::ifstream& in)
@@ -47,11 +47,12 @@ void Pipes::loadPipe(std::ifstream& in)
     in >> length;
     in >> diameter;
     in >> inRepare;
+    in >> inUse;
 }
 
 bool Pipes::filter(int status, string name_str, int d, bool use)
 {
-    return (((inRepare == bool(status)) or (status == -1)) and ((diameter == d) or (d == -1)) and inString(name, name_str) and (use or (d == -1)));
+    return (((inRepare == bool(status)) or (status == -1)) and (!inUse or (d == -1)) and ((diameter == d) or (d == -1)) and inString(name, name_str));
 }
 
 void Pipes::View()
@@ -73,6 +74,11 @@ int Pipes::getDiameter()
 int Pipes::getLength()
 {
     return length;
+}
+
+float Pipes::getProductivity()
+{
+    return diameter * diameter * diameter * diameter * diameter / length;
 }
 
 void Pipes::changeStatus(bool status)

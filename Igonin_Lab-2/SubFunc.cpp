@@ -128,7 +128,7 @@ void dfs(vector<vector<int>>& graph, int v, vector<int>& visited, vector<int>& o
 bool loopcheck(vector<vector<int>>& graph) {
     for (int i = 0; i < graph.size(); i++) {
         for (int j = 0; j < graph[1].size(); j++) {
-            if (graph[i][j] != INF && graph[j][i] != INF) {
+            if ((graph[i][j] != INF && graph[j][i] != INF) and (i != j)) {
                 return true;
             }
         }
