@@ -1,4 +1,5 @@
 #include "GTN.h"
+#include <queue>
 
 using namespace std;
 
@@ -195,6 +196,48 @@ float GTN::Dijkstra(vector<vector<int>>& a, int index_1, int index_2)
     
     return d[index_1][index_2];
 
+}
+
+float GTN::FordFulkerson(vector<vector<int>>& r_matrix, int source, int sink)
+{
+    int num_V = r_matrix.size();
+    vector<int> parent(num_V, -1);
+    int max_flow = 0;
+
+    while (true) {
+       
+        parent.assign(num_V, -1);
+        queue <pair<int, double>> q;
+        q.push({ source, DBL_MAX });
+        parent[source] = source;
+
+        while (!q.empty()) {
+            int u = q.front().first;
+            double path_flow = q.front().second;
+            q.pop();
+
+            for (int v = 0; v < num_V; v++) {
+                if (parent[v] == -1 && r_matrix[u][v] > 0) {
+                    parent[v] = u;
+                    int min_capacity = path_flow > r_matrix[u][v] ? r_matrix[u][v] : path_flow;
+                    if (v == sink) {
+                        while (v != source) {
+                            u = parent[v];
+                            r_matrix[u][v] -= min_capacity;
+                            r_matrix[v][u] += min_capacity;
+                            v = u;
+                        }
+                        max_flow += min_capacity;
+                        break;
+                    }
+                    q.push({ v, min_capacity });
+                }
+            }
+        }
+        if (parent[sink] == -1)
+            break;
+    }
+    return max_flow;
 }
 
 std::vector<int> GTN::filterCS()
@@ -660,4 +703,145 @@ void GTN::shortestPath()
             addConnect();
     }
         
+}
+
+void GTN::maxStream()
+{
+    if (connections.size() != 0)
+    {
+        vector <int> index = filterCS();
+
+        for (int i = 0; i < index.size(); i++)
+        {
+            cout << "Station " << i + 1 << endl;
+            Stations[index[i]].View(index[i]);
+        }
+
+        int index_1;
+        int index_2;
+
+        while (1)
+        {
+            cout << "Choose first CS";
+            index_1 = index[tryChoose(1, index.size()) - 1];
+            cout << "Choose last CS";
+            index_2 = index[tryChoose(1, index.size()) - 1];
+            if (index_1 == index_2)
+                cout << "Second CS must be different" << endl;
+            else
+                break;
+        }
+
+        vector <int> vert;
+        int n = 0; bool temp1 = false; bool temp2 = false; int ind_1 = -1; int ind_2 = -1;
+
+        for (auto it = connections.begin(); it != connections.end(); it++)
+        {
+            bool t1 = true;
+            bool t2 = true;
+            for (int i = 0; i < vert.size(); i++)
+            {
+                if (vert[i] == it->first.first)
+                    t1 = false;
+                if (vert[i] == it->first.second)
+                    t2 = false;
+            }
+
+            if (t1)
+            {
+                vert.push_back(it->first.first);
+
+                if (it->first.first == index_1)
+                {
+                    temp1 = true;
+                    ind_1 = vert.size() - 1;
+                }
+                else if (it->first.first == index_2)
+                {
+                    temp2 = true;
+                    ind_2 = vert.size() - 1;
+                }
+            }
+            if (t2)
+            {
+                vert.push_back(it->first.second);
+
+                if (it->first.second == index_1)
+                {
+                    temp1 = true;
+                    ind_1 = vert.size() - 1;
+                }
+                else if (it->first.second == index_2)
+                {
+                    temp2 = true;
+                    ind_2 = vert.size() - 1;
+                }
+            }
+
+            n += int(t1) + int(t2);
+        }
+
+        vector<vector<int>> matrix(n, vector<int>(n, INF));
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+            {
+                matrix[i][j] = i == j ? 0 : connections.contains(make_pair(vert[i], vert[j])) ? pipes[connections[make_pair(vert[i], vert[j])]].getLength() : INF;
+            }
+
+        if (temp1 and temp2)
+        {
+            int path = FordFulkerson(matrix, ind_1, ind_2);
+            if (path != 0)
+                cout << "Max flow: " << path << endl << endl;
+            else
+                cout << "There is no way from CS with ID " << index_1 << " to CS with ID " << index_2 << endl << endl;
+        }
+        else
+            cout << "There is no way from CS with ID " << index_1 << " to CS with ID " << index_2 << endl << endl;
+
+    }
+    else
+    {
+        cout << "There is noi connections.\nWould you like to add some?\n\n";
+        cout << "1. Add connections\n2. Return to menu";
+        if (-tryChoose(1, 2) + 2)
+            addConnect();
+    }
+}
+
+void GTN::viewConnections()
+{
+    int i = 1;
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        cout << "Connection " << i << "    start: CS " << it->first.first << " end: CS " << it->first.second << " pipe: " << it->second << endl;
+        cout << endl;
+        i++;
+    }
+}
+
+void GTN::editConnections()
+{
+    int i = 0;
+    for (auto it = connections.begin(); it != connections.end(); it++)
+    {
+        i++;
+        cout << "Connection " << it->first.first << ' ' << it->first.second << "    start: CS " << it->first.first << " end : CS " << it->first.second << " pipe : " << it->second << endl;
+        cout << endl;
+    }
+    cout << "Choose connection (pair): ";
+    int index_1 = tryChoose(1, 99999);
+    int index_2 = tryChoose(1, 99999);
+    if (connections.contains({ index_1, index_2 }))
+    {
+        cout << "Delete connection?\n1. Yes\n2. No" << endl;
+        if (-tryChoose(1, 2) + 2)
+        {
+            connections.erase({index_1, index_2});
+        }
+    }
+    else
+        cout << "This CS is not connected" << endl;
+    
 }

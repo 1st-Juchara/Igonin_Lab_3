@@ -14,11 +14,9 @@ using namespace std;
 using namespace chrono;
 
 int Menu() {
-    std::cout << "1.  Add pipe \n2.  Add CS \n3.  Add connection \n4.  Topological sort \n5.  Shortest path \n6.  View pipes \n7.  View CS \n8.  Edit pipe \n9.  Edit CS \n10. Save \n11. Load \n12. Exit";
-    int number = tryChoose(1, 11);
+    std::cout << "1.  Add pipe \n2.  Add CS \n3.  Add connection \n4.  View connections \n5.  Delete connection\n6.  Topological sort \n7.  Shortest path \n8.  Max Flow  \n9.  View pipes \n10. View CS \n11. Edit pipe \n12. Edit CS \n13. Save \n14. Load \n15. Exit";
+    int number = tryChoose(1, 15);
     return number;
-    int x = 5;
-    int y = 6;
 }
 
 int main()
@@ -44,30 +42,39 @@ int main()
             Rijulka.addConnect();
             break;
         case 4:
-            Rijulka.topologicalSorting();
+            Rijulka.viewConnections();
             break;
         case 5:
-            Rijulka.shortestPath();
+            Rijulka.editConnections();
             break;
         case 6:
-            Rijulka.ViewPipes();
+            Rijulka.topologicalSorting();
             break;
         case 7:
-            Rijulka.ViewStations();
-            break;
-        case 8:
-            Rijulka.editPipes();
-            break;
-        case 9:
-            Rijulka.editCS();
-            break;
-        case 10:
             Rijulka.shortestPath();
             break;
+        case 8:
+            Rijulka.maxStream();
+            break;
+        case 9:
+            Rijulka.ViewPipes();
+            break;
+        case 10:
+            Rijulka.ViewStations();
+            break;
         case 11:
-            Rijulka.DataIn();
+            Rijulka.editPipes();
             break;
         case 12:
+            Rijulka.editCS();
+            break;
+        case 13:
+            Rijulka.shortestPath();
+            break;
+        case 14:
+            Rijulka.DataIn();
+            break;
+        case 15:
             return 0;
             break;
         default:

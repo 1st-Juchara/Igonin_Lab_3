@@ -26,6 +26,7 @@ private:
 	void changeCS(const std::vector <int>& index);
 	void changePipe(const std::vector <int>& index);
 	float Dijkstra(std::vector<std::vector<int>>& a, int index_1, int index_2);
+	float FordFulkerson(std::vector<std::vector<int>>& r_matrix, int source, int silk);
 	std::vector <int> filterCS();
 	std::vector <int> filterPipes(int d = -1, bool use = true);
 public:
@@ -42,6 +43,8 @@ public:
 	void editPipes();
 	void topologicalSorting();
 	void shortestPath();
-	//void maxStream();
+	void maxStream();
+	void viewConnections();
+	void editConnections();
 };
 
